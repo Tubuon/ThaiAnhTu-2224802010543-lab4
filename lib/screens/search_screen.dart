@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/weather_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -11,18 +13,33 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
-  final List<String> _recentSearches = [];
+  List<String> _recentSearches = [];
 
   @override
   void initState() {
     super.initState();
     context.read<WeatherProvider>().loadFavoriteCities();
+    _loadRecentSearches();
   }
+
+  Future<void> _loadRecentSearches() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _recentSearches = prefs.getStringList('recent_searches') ?? [];
+    });
+  }
+
+  Future<void> _saveRecentSearches() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('recent_searches', _recentSearches);
+  }
+
 
   void _search(String cityName) {
     if (cityName.trim().isEmpty) return;
     if (!_recentSearches.contains(cityName)) {
       setState(() => _recentSearches.insert(0, cityName));
+      _saveRecentSearches();
     }
     context.read<WeatherProvider>().fetchWeatherByCity(cityName);
     Navigator.pop(context);

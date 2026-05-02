@@ -5,7 +5,7 @@ import 'screens/home_screen.dart';
 import 'config/api_config.dart';
 
 void main() {
-  ApiConfig.apiKey = 'YOUR_API_KEY';
+  ApiConfig.apiKey = 'fd59a34db2483d944009950de0e9ec2b';
 
   runApp(
     ChangeNotifierProvider(

@@ -49,11 +49,7 @@ class WeatherProvider extends ChangeNotifier {
         position.latitude,
         position.longitude,
       );
-      final cityName = await _locationService.getCityName(
-        position.latitude,
-        position.longitude,
-      );
-      _forecast = await _weatherService.getForecast(cityName);
+      _forecast = await _weatherService.getForecast(_currentWeather!.cityName);
       await _storageService.saveWeatherData(_currentWeather!);
       _state = WeatherState.loaded;
       _errorMessage = '';
